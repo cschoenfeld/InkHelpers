@@ -1,0 +1,27 @@
+InkHelpers PHP classes.
+
+Ink is a terrific framework for building responsive e-mails, 
+but it can be difficult to scan the HTML and figure out where you are. 
+Using PHP classes to build your rows and columns makes the code a little more readable, 
+or at least that's the intention here.
+
+The Ink framework, by ZURB, Inc., can be found here: 
+http://zurb.com/ink/
+
+Example usage for the helper classes, showing some of the functionality:
+
+	$row = new Row();
+	$row->setClass('myRow anotherClass');
+	$col1 = new Columns(8, 'left');
+	$col2 = new Columns(4, 'both');
+	$col1->setContent("<p>Content of my main column.</p>\n");
+	$col2->setContent("<p>Content of my sidebar.</p>");
+	$col1->setClass('mainColumn');
+	$col1->setWrapperClass('mainColumnWrapper');
+	$col2->setClass('sidebar');
+	$col2->setWrapperClass('sidebarWrapper');
+	$row1->addcol($col1);
+	$row1->addcol($col2);
+	echo $row1->render();	
+
+@author Charles Schoenfeld, Adams & Knight

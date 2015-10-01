@@ -54,6 +54,87 @@ class InkElement {
 	}
 }
 
+class InkContainer extends InkElement {
+	var $content; 
+
+	function setContent($html) {
+		$this->content = $html;
+	}
+	
+	function appendContent($html) {
+		$this->content .= $html;
+	}
+		
+}
+
+class BulletList extends InkElement {
+	var $dot; // This will be passed to each member of $bullets
+	var $bullets; // array of Bullet objects
+	
+	function __construct($arr=null) {
+		$this->setBullets($arr);
+		$this->dot = '&bull;';
+	}
+	
+	function setBullets($arr) {
+		if (is_array($arr)) { 
+			$this->bullets = $arr; 
+		} elseif (is_array($this->bullets) === false) {
+			$this->bullets = array();
+		}
+	}
+	
+	function addBullet($bull) {
+		if (is_object($bull) === true && get_class($bull) == 'Bullet') {
+			if (is_array($this->bullets)) {
+				$this->bullets[] = $bull; // append to existing array
+			} else {
+				$this->bullets = array($bull); // create new array with one member
+			}
+		}
+	}
+	
+	function setDot($html) {
+		if (is_string($html)) { $this->dot = $html; }
+	}
+	
+	function render() {
+		$out = sprintf("<table border=\"0\" width=\"100%%\" cellspacing=\"0\" cellpadding=\"0\" class=\"bulletListContainer %s\" style=\"%s\"%s><tbody><tr><td class=\"bulletList\">", 
+			$this->classes, $this->styles, $this->attributes());
+		foreach ($this->bullets as $b) {
+			$b->setDot($this->dot);
+			$out .= $b->render();
+		}
+		$out .= "</td></tr></tbody></table>\n";
+		return $out;
+	}
+}
+
+class Bullet extends InkContainer {
+	var $dot; // Is the dot an HTML entity, or an image?
+
+	function __construct($str) {
+		if (is_string($str)) { $this->content = $str; }
+	}
+
+	function setDot($html) {
+		if (is_string($html)) { $this->dot = $html; }
+	}
+		
+	function render() {
+		$out .= sprintf("<table border=\"0\" width=\"100%%\" cellspacing=\"0\" cellpadding=\"0\" class=\"%s\" style=\"%s\"%s><tbody>
+                    <tr>
+                      <td class=\"bulletCell\" valign=\"top\">%s</td>
+                      <td class=\"bulletText\">%s</td>
+                    </tr>
+                  </tbody>
+                </table>\n", 
+			$this->classes, $this->styles, $this->attributes(), $this->dot, $this->content);
+		return $out;
+	}
+
+}
+
 class Row extends InkElement {
 	var $columns; // array of Columns objects
 	var $offset; 
@@ -97,10 +178,9 @@ class Row extends InkElement {
 	}
 }
 
-class Columns extends InkElement {
+class Columns extends InkContainer {
 	var $span; // one, two ... twelve
 	var $textPad; // none (default), left, right, both
-	var $content; 
 	var $wrapperClasses;
 	var $wrapperStyles; 
 	var $wrapperAttribs;
@@ -133,14 +213,6 @@ class Columns extends InkElement {
 	
 	function setWrapperStyle($s) {
 		$this->wrapperStyles = $s;
-	}
-	
-	function setContent($html) {
-		$this->content = $html;
-	}
-	
-	function appendContent($html) {
-		$this->content .= $html;
 	}
 	
 	function pad($pad) {

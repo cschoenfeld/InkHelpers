@@ -194,6 +194,53 @@ class Row extends InkElement {
 	}
 }
 
+class SideBySide extends Row {
+	/* 
+		Uses the table align method, instead of the cell align method, for Android Mail 4.4 compatiblity.
+		Requires exactly two columns.
+		
+		Remember to add relevant styles to the media query for phones. Most importantly:
+
+			.table_align {
+				display: block !important;
+				width: 100% !important;
+			}		
+	*/
+
+	var $cellClasses;
+	var $cellStyles;
+
+	function setCellClass($c) {
+		$this->cellClasses = $c;
+	}
+	
+	function setCellStyle($s) {
+		$this->cellStyles = $s;
+	}
+	
+	function render() {
+		if (is_array($this->columns) === false || count($this->columns) != 2) {
+			throw new Exception("Side-by-side row must contain exactly 2 columns.");
+		} 
+		$out = sprintf("<table class=\"row %s\" style=\"%s\">\n", $this->classes, $this->styles);
+		$out .= sprintf("\t<tr><td class=\"%s\" style=\"%s\">\n", $this->cellClasses, $this->cellStyles);
+		$colnum = 1;
+		foreach ($this->columns as $col) {
+			$alignClass = ($colnum == 2) ? 'right' : 'left';
+			$out .= sprintf("<table align=\"%s\" class=\"table_align %s\" style=\"%s\"%s><tr>\n", 
+				$alignClass, $col->wrapperClasses, $col->wrapperStyles, $col->wrapperAttributes());
+			$out .= sprintf("<td class=\"%s\" style=\"%s\"%s\n>", 
+				$col->classes, $col->styles, $col->attributes());
+			$out .= $col->content . "\n";
+			$out .= "</td></tr></table>\n\n";
+			$colnum++;
+		}
+		$out .= "\t</td></tr>\n";
+		$out .= "</table>\n\n\n";
+		return $out;
+	}
+}
+
 class Columns extends InkContainer {
 	var $span; // one, two ... twelve
 	var $textPad; // none (default), left, right, both

@@ -22,6 +22,21 @@
 	$row1->addcol($col1);
 	$row1->addcol($col2);
 	echo $row1->render();	
+
+	To use the bulleted list builder: 
+
+	// Create the individual bullets
+	$li1 = new Bullet("First bullet.");
+	$li2 = new Bullet("Second bullet.");
+	$bulletsArr = array($li1, $li2);
+
+	// Wrap the bullets in a "list" object.
+	$ul = new BulletList($bulletsArr);
+	// Optionally, use a custom "dot" for each list item, instead of a &bull; character.
+	$ul->setDot('<img src="http://mysite.org/images/mybullet.png" alt="&bull;">');
+
+	// Render the HTML (into a column of the layout).
+	$myColumn->appendContent($ul->render());
 		
 */
 
@@ -116,7 +131,8 @@ class Bullet extends InkContainer {
 	function __construct($str) {
 		if (is_string($str)) { $this->content = $str; }
 	}
-
+	
+	// "setDot()" will be called by the BulletList object. Do not call this method directly.
 	function setDot($html) {
 		if (is_string($html)) { $this->dot = $html; }
 	}

@@ -138,7 +138,7 @@ class Bullet extends InkContainer {
 	}
 		
 	function render() {
-		$out .= sprintf("<table border=\"0\" width=\"100%%\" cellspacing=\"0\" cellpadding=\"0\" class=\"%s\" style=\"%s\"%s><tbody>
+		$out = sprintf("<table border=\"0\" width=\"100%%\" cellspacing=\"0\" cellpadding=\"0\" class=\"%s\" style=\"%s\"%s><tbody>
                     <tr>
                       <td class=\"bulletCell\" valign=\"top\">%s</td>
                       <td class=\"bulletText\">%s</td>

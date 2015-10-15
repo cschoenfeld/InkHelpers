@@ -209,6 +209,7 @@ class SideBySide extends Row {
 
 	var $cellClasses;
 	var $cellStyles;
+	var $preColumns;
 
 	function setCellClass($c) {
 		$this->cellClasses = $c;
@@ -217,6 +218,14 @@ class SideBySide extends Row {
 	function setCellStyle($s) {
 		$this->cellStyles = $s;
 	}
+
+	function setPreColumns($html) {
+		$this->preColumns = $html;
+	}
+	
+	function appendPreColumns($html) {
+		$this->preColumns .= $html;
+	}
 	
 	function render() {
 		if (is_array($this->columns) === false || count($this->columns) != 2) {
@@ -224,6 +233,9 @@ class SideBySide extends Row {
 		} 
 		$out = sprintf("<table class=\"row %s\" style=\"%s\">\n", $this->classes, $this->styles);
 		$out .= sprintf("\t<tr><td class=\"%s\" style=\"%s\">\n", $this->cellClasses, $this->cellStyles);
+		if (empty($this->preColumns) === false) {
+			$out .= $this->preColumns;
+		}
 		$colnum = 1;
 		foreach ($this->columns as $col) {
 			$alignClass = ($colnum == 2) ? 'right' : 'left';
